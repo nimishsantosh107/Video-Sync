@@ -1,0 +1,19 @@
+{
+	"manifest_version": 2,
+	"description": "Watch videos in sync",
+
+	"name": "VideoSync",
+	"version": "1.0",
+
+	"icons": {
+		"48": "icons/logo48.png",
+		"96": "icons/logo96.png"
+	},
+
+	"content_scripts": [
+		{
+			"matches": ["*://www.youtube.com/watch*"],
+			"js": ["main.js"]
+		}
+	]
+}
