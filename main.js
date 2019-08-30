@@ -11,6 +11,6 @@ function checkURLChange(){
 
 
 //MAIN
-var prevURL = "";
 //CHECK URL CHANGES
+var prevURL = "";
 const URLChangeHandler = window.setInterval(checkURLChange, 500);
