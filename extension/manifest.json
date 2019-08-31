@@ -5,6 +5,14 @@
 	"name": "VideoSync",
 	"version": "1.0",
 
+	"applications":
+	{
+	    "gecko":
+	    {
+	        "id": "video-sync@mozilla.org"
+	    }
+	},
+
 	"permissions": [
 	  	"tabs",
 	  	"activeTab",
