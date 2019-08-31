@@ -6,14 +6,37 @@ function checkURLChange(){
 	    prevURL = document.URL;
 	    var videoElement = document.getElementsByTagName("video")[0];
 		console.log(videoElement);
+		console.log(document.URL);
 	}
 }
 
 //SETUP
-//IN CHROME, ACTIVATE POPUP
-if(chrome){ chrome.runtime.sendMessage({"message": "activate_icon"});}
+//IN CHROME
+if(chrome){ 
+	//ACTIVATE POPUP
+	chrome.runtime.sendMessage({"message": "activate_icon"});
+
+	//HANDLE INCOMING ROOM NAME
+	chrome.runtime.onMessage.addListener(function (request, sender) {
+		console.log(request);
+		URLChangeHandler = window.setInterval(checkURLChange, 1000);
+		roomName = request.roomName;
+	});
+}
+// OTHER BROWSERS
+else{
+	//HANDLE INCOMING ROOM NAME
+	browser.runtime.onMessage.addListener(function (request, sender) {
+		if(request.roomName){ 
+			console.log(request);
+			URLChangeHandler = window.setInterval(checkURLChange, 1000);
+			roomName = request.roomName;}
+		else{ console.log(err) }
+	});
+}
+
 
 //MAIN
-//CHECK URL CHANGES
 var prevURL = "";
-const URLChangeHandler = window.setInterval(checkURLChange, 500);
+var roomName = "";
+var URLChangeHandler = null;
