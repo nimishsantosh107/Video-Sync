@@ -23,8 +23,8 @@ function checkURLChange(){
 function handleInteraction(request, sender) {
 	//FROM APP
 	if(request.roomName){ 
-		console.log(request);
 		thisbrowser.runtime.sendMessage({"roomName": request.roomName});
+		console.log(request);
 	}
 	//FROM BACKGROUND
 	if(request.data){
@@ -32,8 +32,8 @@ function handleInteraction(request, sender) {
 		if(request.data.URL){
 			if(request.data.URL === document.URL)
 				return;
-			console.log(request.data);
 			location.href = request.data.URL;
+			console.log(request.data);
 		}
 	}
 	else{ console.log(request.error); }

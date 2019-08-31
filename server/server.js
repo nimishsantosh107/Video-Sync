@@ -47,10 +47,10 @@ io.on("connection",async (socket)=>{
 
 	//CHANGE IN SONG
 	socket.on('newURL', async (data)=>{
-		console.log(data.URL);
 		socket.curURL = data.URL;
 		rooms[socket.room].curURL = data.URL
 		io.to(socket.room).emit('updateURL', data);
+		console.log(data.URL);
 	});
 
 	//LEAVE & JOIN NEW ROOM

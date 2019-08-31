@@ -25,13 +25,13 @@ socket.on('connect', async function () {
 	console.log('CONNECTED');
 
 	socket.on('roomStat', function (data) {
-		console.log(data);
 		serverToContent(data);
+		console.log(data);
 	});
 
 	socket.on('URLOnJoin', function (data) {
-		console.log(data);
 		serverToContent(data);
+		console.log(data);
 		setTimeout(function(){ JOINControlFlag = true; }, 6000);
 	});
 
@@ -39,16 +39,16 @@ socket.on('connect', async function () {
 		if(JOINControlFlag){
 			if(URLControlFlag){
 				URLControlFlag = false;
-				console.log(data);
 				serverToContent(data);
+				console.log(data);
 			}
 			else{URLControlFlag = true}
 		}
 	});
 
 	socket.on('newLeaving', function (data) {
-		console.log(data);
 		serverToContent(data);
+		console.log(data);
 	});
 });
 
@@ -69,8 +69,8 @@ function contentToServer (request, sender) {
 	if (request.URL && JOINControlFlag) {
 		if(URLControlFlag){
 			URLControlFlag = false;
-			console.log(request);
 			socket.emit('newURL',{URL: request.URL});
+			console.log(request);
 		}
 		else{ URLControlFlag = true;}
 	}
