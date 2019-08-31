@@ -18,20 +18,20 @@
 	},
 
   	"background": {
-    	"scripts": ["socket.io.js", "background.js"]
+    	"scripts": ["scripts/background/socket.io.js", "scripts/background/background.js"]
   	},
 
 	"content_scripts": [
 		{
 			"matches": ["*://www.youtube.com/watch*"],
-			"js": ["main/main.js"]
+			"js": ["scripts/content/content.js"]
 		}
 	],
 
 	"page_action": {
 		"show_matches": ["*://www.youtube.com/watch*"],
 		"default_icon": "icons/logo48.png",
-		"default_popup": "app/app.html",
+		"default_popup": "scripts/popup/app.html",
 		"default_title": "VideoSync"
 	}
 }
