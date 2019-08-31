@@ -9,6 +9,9 @@ function checkURLChange(){
 	}
 }
 
+//SETUP
+//IN CHROME, ACTIVATE POPUP
+if(chrome){ chrome.runtime.sendMessage({"message": "activate_icon"});}
 
 //MAIN
 //CHECK URL CHANGES

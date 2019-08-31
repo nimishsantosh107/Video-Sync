@@ -5,26 +5,15 @@
 	"name": "VideoSync",
 	"version": "1.0",
 
-	"permissions": [
-	  	"tabs",
-	  	"activeTab",
-	  	"http://*/*",
-	  	"https://*/*"
-	],
-
 	"icons": {
 		"48": "icons/logo48.png",
 		"96": "icons/logo96.png"
 	},
 
-  	"background": {
-    	"scripts": ["background.js"]
-  	},
-
 	"content_scripts": [
 		{
 			"matches": ["*://www.youtube.com/watch*"],
-			"js": ["main/main.js"]
+			"js": ["main.js"]
 		}
 	],
 
