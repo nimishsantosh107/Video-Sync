@@ -24,7 +24,7 @@
 	"content_scripts": [
 		{
 			"matches": ["*://www.youtube.com/watch*"],
-			"js": ["main/main.js"]
+			"js": ["main/socket.io.js", "main/main.js"]
 		}
 	],
 

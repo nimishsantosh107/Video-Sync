@@ -10,33 +10,49 @@ function checkURLChange(){
 	}
 }
 
-//SETUP
-//IN CHROME
-if(chrome){ 
-	//ACTIVATE POPUP
-	chrome.runtime.sendMessage({"message": "activate_icon"});
-
-	//HANDLE INCOMING ROOM NAME
-	chrome.runtime.onMessage.addListener(function (request, sender) {
+function handleInteraction(request, sender) {
+	if(request.roomName){ 
 		console.log(request);
-		URLChangeHandler = window.setInterval(checkURLChange, 1000);
+		if(roomName !== ""){
+			socket.emit('leaving', {socketId: socket.id, room: roomName});
+		}
 		roomName = request.roomName;
-	});
+		socket.emit('joinRoom', {roomName: roomName});
+	}
+	else{ console.log(request.error); }
 }
-// OTHER BROWSERS
-else{
-	//HANDLE INCOMING ROOM NAME
-	browser.runtime.onMessage.addListener(function (request, sender) {
-		if(request.roomName){ 
-			console.log(request);
-			URLChangeHandler = window.setInterval(checkURLChange, 1000);
-			roomName = request.roomName;}
-		else{ console.log(err) }
-	});
-}
-
 
 //MAIN
+var socket = io("http://localhost:3000/");
 var prevURL = "";
 var roomName = "";
 var URLChangeHandler = null;
+
+socket.on('connect', async function () {
+	console.log('CONNECTED');
+	console.log(socket);
+
+	//ACTIVATE URL CHANGR CHECKER
+	URLChangeHandler = window.setInterval(checkURLChange, 1000);
+
+	//SETUP
+	//IN CHROME
+	if(chrome){ 
+		//ACTIVATE POPUP
+		chrome.runtime.sendMessage({"message": "activate_icon"});
+
+		//HANDLE INCOMING ROOM NAME
+		chrome.runtime.onMessage.addListener(handleInteraction);
+	}
+	// OTHER BROWSERS
+	else{
+		//HANDLE INCOMING ROOM NAME
+		browser.runtime.onMessage.addListener(handleInteraction);
+	}
+
+	socket.on('roomStat', function (data) {
+		console.log(data);
+	});
+
+	socket.on('newLeaving', function (data) {console.log(`${data.leftSocketId} LEFT THE ROOM`);});
+});
