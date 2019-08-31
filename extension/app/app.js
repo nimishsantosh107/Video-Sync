@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
 				return;
 			browser.tabs.getCurrent().then(function (tabs) {
 				if(roomText.value === ""){
-					chrome.tabs.sendMessage(tabs[0].id, {error: "Room name empty"});
+					browser.tabs.sendMessage(tabs[0].id, {error: "Room name empty"});
 					return;	
-				}else{ chrome.tabs.sendMessage(tabs[0].id, {roomName: roomText.value});	}
+				}else{ browser.tabs.sendMessage(tabs[0].id, {roomName: roomText.value});	}
 			}, function (err) {
 				browser.tabs.sendMessage(tabs[0].id, {error: err});
 			});

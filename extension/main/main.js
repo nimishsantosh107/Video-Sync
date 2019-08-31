@@ -1,58 +1,52 @@
+/*
+	RECV
+		roomName
+		error
+	SEND
+		message
+		roomName
+		URL
+*/
+
 //UTIL FUNCTIONS
 function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}
 
 function checkURLChange(){
 	if (document.URL !== prevURL) {
 	    prevURL = document.URL;
-	    var videoElement = document.getElementsByTagName("video")[0];
-		console.log(videoElement);
+	    videoElement = document.getElementsByTagName("video")[0];
 		console.log(document.URL);
+		browser.runtime.sendMessage({"URL": document.URL});
 	}
 }
 
 function handleInteraction(request, sender) {
+	//FROM APP
 	if(request.roomName){ 
 		console.log(request);
-		if(roomName !== ""){
-			socket.emit('leaving', {socketId: socket.id, room: roomName});
+		browser.runtime.sendMessage({"roomName": request.roomName});
+	}
+	//FROM BACKGROUND
+	if(request.data){
+		if(request.data.URL){
+			if(request.data.URL === document.URL)
+				return;
+			console.log(request.data);
+			location.href = request.data.URL;
 		}
-		roomName = request.roomName;
-		socket.emit('joinRoom', {roomName: roomName});
 	}
 	else{ console.log(request.error); }
 }
 
+
 //MAIN
-var socket = io("http://localhost:3000/");
+if(chrome){
+	var browser = chrome;
+	//ACTIVATE POPUP
+	chrome.runtime.sendMessage({"command": "activate_icon"});
+}
+browser.runtime.onMessage.addListener(handleInteraction);
 var prevURL = "";
-var roomName = "";
-var URLChangeHandler = null;
-
-socket.on('connect', async function () {
-	console.log('CONNECTED');
-	console.log(socket);
-
-	//ACTIVATE URL CHANGR CHECKER
-	URLChangeHandler = window.setInterval(checkURLChange, 1000);
-
-	//SETUP
-	//IN CHROME
-	if(chrome){ 
-		//ACTIVATE POPUP
-		chrome.runtime.sendMessage({"message": "activate_icon"});
-
-		//HANDLE INCOMING ROOM NAME
-		chrome.runtime.onMessage.addListener(handleInteraction);
-	}
-	// OTHER BROWSERS
-	else{
-		//HANDLE INCOMING ROOM NAME
-		browser.runtime.onMessage.addListener(handleInteraction);
-	}
-
-	socket.on('roomStat', function (data) {
-		console.log(data);
-	});
-
-	socket.on('newLeaving', function (data) {console.log(`${data.leftSocketId} LEFT THE ROOM`);});
-});
+var videoElement = null;
+//ACTIVATE URL CHANGR CHECKER
+var URLChangeHandler = window.setInterval(checkURLChange, 1000);

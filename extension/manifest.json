@@ -18,13 +18,13 @@
 	},
 
   	"background": {
-    	"scripts": ["background.js"]
+    	"scripts": ["socket.io.js", "background.js"]
   	},
 
 	"content_scripts": [
 		{
 			"matches": ["*://www.youtube.com/watch*"],
-			"js": ["main/socket.io.js", "main/main.js"]
+			"js": ["main/main.js"]
 		}
 	],
 
