@@ -4,9 +4,11 @@ var URLControlFlag = true;
 var JOINControlFlag = false;
 var isFirefox;
 
+//CHECK IF FIREFOX
 try {isFirefox = typeof InstallTrigger !== 'undefined';} 
 catch(e) {isFirefox = false;}
 
+//HADNDLE INERACTION
 function serverToContent (data) {
 	if(isFirefox){
 		browser.tabs.query({currentWindow: true, active: true}, function (tabs) {
@@ -50,17 +52,20 @@ socket.on('connect', async function () {
 	});
 });
 
-function handleInteraction (request, sender) {
+//HANDLE INTERACTION
+function contentToServer (request, sender) {
     //ONLY CHROME
     if (request.command === "activate_icon") {
         chrome.pageAction.show(sender.tab.id);
     }
+    //JOINING ROOM
 	if (request.roomName) {
 		if(roomName !== "")
 			socket.emit('leaving', {socketId: socket.id, roomName: roomName});
 		roomName = request.roomName;
 		socket.emit('joinRoom', {roomName: roomName});
 	}
+	//URL CHANGE
 	if (request.URL && JOINControlFlag) {
 		if(URLControlFlag){
 			URLControlFlag = false;
@@ -72,5 +77,5 @@ function handleInteraction (request, sender) {
 }
 
 //HANDLE INTERACTION
-if(isFirefox){browser.runtime.onMessage.addListener(handleInteraction);}
-else{chrome.extension.onMessage.addListener(handleInteraction);}
+if(isFirefox){browser.runtime.onMessage.addListener(contentToServer);}
+else{chrome.extension.onMessage.addListener(contentToServer);}

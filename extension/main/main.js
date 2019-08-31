@@ -16,7 +16,7 @@ function checkURLChange(){
 	    prevURL = document.URL;
 	    videoElement = document.getElementsByTagName("video")[0];
 		console.log(document.URL);
-		browser.runtime.sendMessage({"URL": document.URL});
+		thisbrowser.runtime.sendMessage({"URL": document.URL});
 	}
 }
 
@@ -24,10 +24,11 @@ function handleInteraction(request, sender) {
 	//FROM APP
 	if(request.roomName){ 
 		console.log(request);
-		browser.runtime.sendMessage({"roomName": request.roomName});
+		thisbrowser.runtime.sendMessage({"roomName": request.roomName});
 	}
 	//FROM BACKGROUND
 	if(request.data){
+		//URL CHANGE
 		if(request.data.URL){
 			if(request.data.URL === document.URL)
 				return;
@@ -40,13 +41,15 @@ function handleInteraction(request, sender) {
 
 
 //MAIN
-if(chrome){
-	var browser = chrome;
-	//ACTIVATE POPUP
-	chrome.runtime.sendMessage({"command": "activate_icon"});
-}
-browser.runtime.onMessage.addListener(handleInteraction);
+var thisbrowser;
 var prevURL = "";
 var videoElement = null;
 //ACTIVATE URL CHANGR CHECKER
 var URLChangeHandler = window.setInterval(checkURLChange, 1000);
+//SET GLOBAL BROWSER
+if(chrome){
+	thisbrowser = chrome;
+	chrome.runtime.sendMessage({"command": "activate_icon"});
+}else {thisbrowser = browser;}
+//HANDLE INTERACTION B/W APP and BACKGROUND
+thisbrowser.runtime.onMessage.addListener(handleInteraction);

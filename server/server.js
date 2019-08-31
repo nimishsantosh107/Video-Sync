@@ -20,9 +20,7 @@ var app = express();
 var httpServer = http.Server(app);
 var io = socketIO(httpServer); 
 
-var rooms = {
-
-}
+var rooms = {}
 
 //SOCKET HANDLING
 io.on("connection",async (socket)=>{
@@ -47,6 +45,7 @@ io.on("connection",async (socket)=>{
 		console.log(`++  ${socket.id} JOINING |${socket.room}|`);
 	});
 
+	//CHANGE IN SONG
 	socket.on('newURL', async (data)=>{
 		console.log(data.URL);
 		socket.curURL = data.URL;
