@@ -22,11 +22,11 @@ var io = socketIO(httpServer);
 var rooms = {}
 
 //SOCKET HANDLING
-io.on("connection",async (socket)=>{
+io.on("connection", (socket)=>{
 	console.log("+ CONNECTED: ",socket.id);
 
 	//ROOM
-	socket.on('joinRoom',async (data)=>{
+	socket.on('joinRoom', async (data)=>{
 		socket.room = data.roomName;
 		await socket.join(socket.room);
 		if(rooms[socket.room] === undefined){
@@ -45,11 +45,17 @@ io.on("connection",async (socket)=>{
 	});
 
 	//CHANGE IN SONG
-	socket.on('newURL', async (data)=>{
+	socket.on('newURL', (data)=>{
 		socket.curURL = data.URL;
 		rooms[socket.room].curURL = data.URL
 		io.to(socket.room).emit('updateURL', data);
 		console.log(data.URL);
+	});
+
+	//CONTROLS
+	socket.on('controls', (data)=>{
+		console.log(data);
+		io.to(socket.room).emit('updateControls', data);
 	});
 
 	//LEAVE & JOIN NEW ROOM
@@ -64,7 +70,7 @@ io.on("connection",async (socket)=>{
 	});
 
 	//HANDLE DISCONNECTION
-	socket.on('disconnect',async ()=>{
+	socket.on('disconnect', ()=>{
 		if(socket.room && io.sockets.adapter.rooms[socket.room]){
 			socket.broadcast.to(socket.room).emit('newLeaving',{leftSocketId: socket.id});
 			socket.broadcast.to(socket.room).emit('roomStat',{room: socket.room, usercount: io.sockets.adapter.rooms[socket.room].length, URL: rooms[socket.room].curURL});

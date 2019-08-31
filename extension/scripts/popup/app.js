@@ -14,14 +14,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		joinRoomButton.addEventListener('click', function () {
 			if(roomText.value === "")
 				return;
-			browser.tabs.getCurrent().then(function (tabs) {
-				if(roomText.value === ""){
-					browser.tabs.sendMessage(tabs[0].id, {error: "Room name empty"});
-					return;	
-				}else{ browser.tabs.sendMessage(tabs[0].id, {roomName: roomText.value});	}
-			}, function (err) {
-				browser.tabs.sendMessage(tabs[0].id, {error: err});
-			});
+			browser.tabs.query({currentWindow: true, active: true},
+				function (tabs) {
+					if(roomText.value === ""){
+						browser.tabs.sendMessage(tabs[0].id, {error: "Room name empty"});
+						return;	
+					}else{ browser.tabs.sendMessage(tabs[0].id, {roomName: roomText.value});	}
+				}
+			);
 		}, false);
 	}
 }, false);

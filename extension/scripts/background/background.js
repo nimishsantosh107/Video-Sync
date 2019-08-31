@@ -1,6 +1,7 @@
 var socket = io("http://localhost:3000/");
 var roomName = "";
 var URLControlFlag = true;
+var PLAYPAUSEControlFlag = true;
 var JOINControlFlag = false;
 var isFirefox;
 
@@ -46,6 +47,16 @@ socket.on('connect', async function () {
 		}
 	});
 
+	socket.on('updateControls', function (data) {
+		if(PLAYPAUSEControlFlag) {
+			PLAYPAUSEControlFlag = false;
+			serverToContent(data);
+			console.log(data);
+		}
+		else { PLAYPAUSEControlFlag = true;}
+
+	})
+
 	socket.on('newLeaving', function (data) {
 		serverToContent(data);
 		console.log(data);
@@ -73,6 +84,15 @@ function contentToServer (request, sender) {
 			console.log(request);
 		}
 		else{ URLControlFlag = true;}
+	}
+	// CONTROLS
+	if(request.controls) {
+		if(PLAYPAUSEControlFlag) {
+			PLAYPAUSEControlFlag = false;
+			socket.emit('controls', request);
+			console.log(request);
+		}
+		else { PLAYPAUSEControlFlag = true;}
 	}
 }
 
