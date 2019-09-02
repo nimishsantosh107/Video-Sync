@@ -7,6 +7,13 @@ APP:
 
 SERVER: 
 	DEPLOY LOCATION:`https://video-sync-api.herokuapp.com/`  
-	DEPLOY STATUS: **INTERNAL SERVER ERROR**
+
+
+## Status:
+* Play, Pause, URL change works
+
+## Issues:
+* Seek, Buffer implement
+* query active window needs to change
 
 #### `NOTE: only tested on firefox and chrome`

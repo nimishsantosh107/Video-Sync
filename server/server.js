@@ -32,7 +32,7 @@ io.on("connection", (socket)=>{
 		if(rooms[socket.room] === undefined){
 			var roomObj = {
 				clients: 1,
-				curURL: "",
+				curURL: data.URL,
 			}
 			rooms[socket.room] = roomObj;
 		}

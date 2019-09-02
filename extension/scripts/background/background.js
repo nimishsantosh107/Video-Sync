@@ -1,5 +1,5 @@
-//var socket = io("http://localhost:3000/");
-var socket = io("https://video-sync-api.herokuapp.com/");
+var socket = io("http://localhost:3000/");
+// var socket = io("https://video-sync-api.herokuapp.com/");
 var roomName = "";
 var URLControlFlag = true;
 var PLAYControlFlag = true;
@@ -83,15 +83,23 @@ function contentToServer (request, sender) {
     if (request.command === "activate_icon") {
         chrome.pageAction.show(sender.tab.id);
     }
+    //PAGE LOADED RESET VARS
+    else if (request.STATE === "loaded"){
+    	setTimeout( function () {
+	    	var URLControlFlag = true;
+			var PLAYControlFlag = true;
+			var PAUSEControlFlag = true;
+    	}, 1000);
+    }
     //JOINING ROOM
-	if (request.roomName) {
+	else if (request.roomName) {
 		if(roomName !== "")
 			socket.emit('leaving', {socketId: socket.id, roomName: roomName});
 		roomName = request.roomName;
-		socket.emit('joinRoom', {roomName: roomName});
+		socket.emit('joinRoom', {roomName: roomName, URL: request.URL});
 	}
 	//URL CHANGE
-	if (request.URL && JOINControlFlag) {
+	else if (request.URL && JOINControlFlag) {
 		if(roomName !== ""){
 			if(URLControlFlag){
 				URLControlFlag = false;
@@ -103,7 +111,7 @@ function contentToServer (request, sender) {
 		else{ console.log(request);}
 	}
 	// CONTROLS
-	if(request.controls) {
+	else if (request.controls) {
 		if( roomName !== ""){
 			if(request.controls === "play"){
 				if(PLAYControlFlag) {

@@ -7,10 +7,9 @@
 		roomName
 		URL
 */
-
-//UTIL FUNCTIONS
-function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}
-
+window.onload = function () {
+	thisbrowser.runtime.sendMessage({"STATE": "loaded"});
+}
 
 function checkURLChange(){
 	if (document.URL !== prevURL) {
@@ -24,7 +23,6 @@ function checkURLChange(){
 
 function setListeners() {
 	var timeoutID = setInterval(function () {
-		console.log(videoElement.readyState)
 		if(videoElement.readyState === 4){
 			console.log('VID LOADED');
 			setTimeout(function(){ videoElement.pause(); }, 500);
@@ -46,7 +44,7 @@ function setListeners() {
 function handleInteraction(request, sender, sendMessage) {
 	//FROM POPUP
 	if(request.roomName){ 
-		thisbrowser.runtime.sendMessage({"roomName": request.roomName});
+		thisbrowser.runtime.sendMessage({"roomName": request.roomName, "URL": document.URL});
 		console.log(request);
 	}
 	//FROM BACKGROUND
