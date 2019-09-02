@@ -1,5 +1,5 @@
-var socket = io("http://localhost:3000/");
-// var socket = io("https://video-sync-api.herokuapp.com/");
+//var socket = io("http://localhost:3000/");
+var socket = io("https://video-sync-api.herokuapp.com/");
 var roomName = "";
 var URLControlFlag = true;
 var PLAYControlFlag = true;
