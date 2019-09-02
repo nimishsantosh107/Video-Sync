@@ -11,17 +11,27 @@
 //UTIL FUNCTIONS
 function getElementByXpath(path) {return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;}
 
+
 function checkURLChange(){
 	if (document.URL !== prevURL) {
+		thisbrowser.runtime.sendMessage({"URL": document.URL});
 	    prevURL = document.URL;
 	    videoElement = document.getElementsByTagName("video")[0];
 	    setListeners();
 		console.log(document.URL);
-		thisbrowser.runtime.sendMessage({"URL": document.URL});
 	}
 }
 
 function setListeners() {
+	var timeoutID = setInterval(function () {
+		console.log(videoElement.readyState)
+		if(videoElement.readyState === 4){
+			console.log('VID LOADED');
+			setTimeout(function(){ videoElement.pause(); }, 500);
+			clearTimeout(timeoutID);
+		}
+	}, 100);
+
 	videoElement.onplay = function () {
 		thisbrowser.runtime.sendMessage({controls: "play"});
 		console.log('PLAYING')

@@ -1,8 +1,9 @@
-var socket = io("http://localhost:3000/");
-//var socket = io("https://video-sync-api.herokuapp.com/");
+//var socket = io("http://localhost:3000/");
+var socket = io("https://video-sync-api.herokuapp.com/");
 var roomName = "";
 var URLControlFlag = true;
-var PLAYPAUSEControlFlag = true;
+var PLAYControlFlag = true;
+var PAUSEControlFlag = true;
 var JOINControlFlag = false;
 var isFirefox;
 
@@ -34,29 +35,41 @@ socket.on('connect', async function () {
 	socket.on('URLOnJoin', function (data) {
 		serverToContent(data);
 		console.log(data);
-		setTimeout(function(){ JOINControlFlag = true; }, 6000);
+		setTimeout(function(){ JOINControlFlag = true; }, 1000);
 	});
 
 	socket.on('updateURL', function (data) {
 		if(JOINControlFlag){
 			if(URLControlFlag){
 				URLControlFlag = false;
+				PLAYControlFlag = false;
+				PAUSEControlFlag = false;
 				serverToContent(data);
 				console.log(data);
+				setTimeout(function(){ PLAYControlFlag = true; PAUSEControlFlag = true; }, 2000);
 			}
 			else{URLControlFlag = true}
 		}
 	});
 
 	socket.on('updateControls', function (data) {
-		if(PLAYPAUSEControlFlag) {
-			PLAYPAUSEControlFlag = false;
-			serverToContent(data);
-			console.log(data);
+		if(data.controls === "play"){
+			if(PLAYControlFlag) {
+				PLAYControlFlag = false;
+				serverToContent(data);
+				console.log(data);
+			}
+			else { PLAYControlFlag = true;}
 		}
-		else { PLAYPAUSEControlFlag = true;}
-
-	})
+		else if(data.controls === "pause"){
+			if(PAUSEControlFlag) {
+				PAUSEControlFlag = false;
+				serverToContent(data);
+				console.log(data);
+			}
+			else { PAUSEControlFlag = true;}			
+		}
+	});
 
 	socket.on('newLeaving', function (data) {
 		serverToContent(data);
@@ -79,21 +92,37 @@ function contentToServer (request, sender) {
 	}
 	//URL CHANGE
 	if (request.URL && JOINControlFlag) {
-		if(URLControlFlag){
-			URLControlFlag = false;
-			socket.emit('newURL',{URL: request.URL});
-			console.log(request);
+		if(roomName !== ""){
+			if(URLControlFlag){
+				URLControlFlag = false;
+				socket.emit('newURL',{URL: request.URL});
+				console.log(request);
+			}
+			else{ URLControlFlag = true;}
 		}
-		else{ URLControlFlag = true;}
+		else{ console.log(request);}
 	}
 	// CONTROLS
 	if(request.controls) {
-		if(PLAYPAUSEControlFlag) {
-			PLAYPAUSEControlFlag = false;
-			socket.emit('controls', request);
-			console.log(request);
+		if( roomName !== ""){
+			if(request.controls === "play"){
+				if(PLAYControlFlag) {
+					PLAYControlFlag = false;
+					socket.emit('controls', {controls: request.controls});
+					console.log(request);
+				}
+				else { PLAYControlFlag = true;}
+			} 
+			else if (request.controls === "pause") {
+				if(PAUSEControlFlag) {
+					PAUSEControlFlag = false;
+					socket.emit('controls', {controls: request.controls});
+					console.log(request);
+				}
+				else { PAUSEControlFlag = true;}				
+			}
 		}
-		else { PLAYPAUSEControlFlag = true;}
+		else{ console.log(request);}
 	}
 }
 
