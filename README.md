@@ -5,8 +5,8 @@ APP:
 	ONLY URL CHANGE	
 <br>
 
-SERVER: 
-	DEPLOY LOCATION:`https://video-sync-api.herokuapp.com/`  
+SERVER (offline): 
+	PREV DEPLOY LOCATION:`https://video-sync-api.herokuapp.com/`  
 
 
 ## Status:
